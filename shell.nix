@@ -4,7 +4,9 @@ let
     libGL
     libxkbcommon
     wayland
-    alsa-lib
+    vulkan-tools
+    vulkan-loader
+    # alsa-lib
     # xorg.libX11
     # xorg.libXcursor
     # xorg.libXi
@@ -13,6 +15,6 @@ let
 in
 with pkgs; mkShell {
   inputsFrom = [ ];
-  buildInputs = [ rustup pkg-config alsa-lib ];
+  buildInputs = [ rustup vulkan-tools openssl ];
   LD_LIBRARY_PATH = "${libPath}";
 }
