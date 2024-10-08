@@ -1,0 +1,8 @@
+[package]
+name = "magma_render"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+magma_ecs = "0.1.0-alpha.5"
+wgpu = "22.1.0"
