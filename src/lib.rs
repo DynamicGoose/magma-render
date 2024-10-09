@@ -1,14 +1,20 @@
 use magma_ecs::World;
+use wgpu_context::WgpuContext;
+use winit::window::Window;
+
+pub mod wgpu_context;
 
 #[derive(Default)]
 pub struct RenderState {
     pub render_world: World,
+    pub instance: wgpu::Instance,
 }
 
 impl RenderState {
     pub fn new() -> Self {
         Self {
             render_world: World::new(),
+            instance: wgpu::Instance::new(wgpu::InstanceDescriptor::default()),
         }
     }
 }
