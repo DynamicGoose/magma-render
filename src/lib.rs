@@ -1,5 +1,6 @@
 use magma_ecs::World;
 
+pub mod render_graph;
 pub mod wgpu_context;
 
 #[derive(Default)]
