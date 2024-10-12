@@ -23,7 +23,7 @@ impl ApplicationHandler for TestApp {
                 .create_window(Window::default_attributes())
                 .unwrap(),
         );
-        let _wgpu_context = WgpuContext::new(self.window.as_ref().unwrap());
+        let _wgpu_context = WgpuContext::new();
     }
 
     fn window_event(

@@ -1,4 +1,5 @@
 use magma_ecs::World;
+use wgpu_context::WgpuContext;
 
 pub mod render_graph;
 pub mod wgpu_context;
@@ -6,12 +7,14 @@ pub mod wgpu_context;
 #[derive(Default)]
 pub struct RenderState {
     pub render_world: World,
+    wgpu_context: WgpuContext,
 }
 
 impl RenderState {
     pub fn new() -> Self {
         Self {
             render_world: World::new(),
+            wgpu_context: WgpuContext::new(),
         }
     }
 }

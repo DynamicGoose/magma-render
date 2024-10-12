@@ -1,19 +1,15 @@
 use wgpu::InstanceFlags;
-use winit::window::Window;
 
-pub struct WgpuContext<'a> {
-    pub surface: wgpu::Surface<'a>,
-    pub surface_config: wgpu::SurfaceConfiguration,
+pub struct WgpuContext {
+    pub instance: wgpu::Instance,
     pub graphics_queue: (wgpu::Device, wgpu::Queue),
     pub compute_queue: (wgpu::Device, wgpu::Queue),
     pub copy_queue: (wgpu::Device, wgpu::Queue),
-    pub window: &'a Window,
+    // pub window: &'a Window,
 }
 
-impl<'a> WgpuContext<'a> {
-    pub fn new(window: &'a Window) -> Self {
-        let size = window.inner_size();
-
+impl WgpuContext {
+    pub fn new() -> Self {
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
             flags: InstanceFlags::empty(),
@@ -21,18 +17,19 @@ impl<'a> WgpuContext<'a> {
             gles_minor_version: wgpu::Gles3MinorVersion::Automatic,
         });
 
-        let surface = instance.create_surface(window).unwrap();
+        // let surface = instance.create_surface(window).unwrap();
 
         let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
             power_preference: wgpu::PowerPreference::default(),
-            compatible_surface: Some(&surface),
+            // Some(&surface)
+            compatible_surface: None,
             force_fallback_adapter: false,
         }))
         .unwrap();
 
         let graphics_queue = pollster::block_on(adapter.request_device(
             &wgpu::DeviceDescriptor {
-                label: None,
+                label: Some("graphics"),
                 required_features: wgpu::Features::empty(),
                 required_limits: wgpu::Limits::default(),
                 memory_hints: Default::default(),
@@ -44,7 +41,7 @@ impl<'a> WgpuContext<'a> {
 
         let compute_queue = pollster::block_on(adapter.request_device(
             &wgpu::DeviceDescriptor {
-                label: None,
+                label: Some("compute"),
                 required_features: wgpu::Features::empty(),
                 required_limits: wgpu::Limits::default(),
                 memory_hints: Default::default(),
@@ -56,7 +53,7 @@ impl<'a> WgpuContext<'a> {
 
         let copy_queue = pollster::block_on(adapter.request_device(
             &wgpu::DeviceDescriptor {
-                label: None,
+                label: Some("copy"),
                 required_features: wgpu::Features::empty(),
                 required_limits: wgpu::Limits::default(),
                 memory_hints: Default::default(),
@@ -66,31 +63,18 @@ impl<'a> WgpuContext<'a> {
         ))
         .unwrap();
 
-        let surface_caps = surface.get_capabilities(&adapter);
-        let surface_format = surface_caps
-            .formats
-            .iter()
-            .copied()
-            .find(|f| f.is_srgb())
-            .unwrap_or(surface_caps.formats[0]);
-        let surface_config = wgpu::SurfaceConfiguration {
-            usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: surface_format,
-            width: size.width,
-            height: size.height,
-            present_mode: surface_caps.present_modes[0],
-            alpha_mode: surface_caps.alpha_modes[0],
-            desired_maximum_frame_latency: 2,
-            view_formats: vec![],
-        };
-
         Self {
-            surface,
-            surface_config,
+            instance,
             graphics_queue,
             compute_queue,
             copy_queue,
-            window,
+            // window,
         }
+    }
+}
+
+impl Default for WgpuContext {
+    fn default() -> Self {
+        Self::new()
     }
 }
