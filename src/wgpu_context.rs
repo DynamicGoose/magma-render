@@ -4,8 +4,9 @@ use winit::window::Window;
 pub struct WgpuContext<'a> {
     pub surface: wgpu::Surface<'a>,
     pub surface_config: wgpu::SurfaceConfiguration,
-    pub device: wgpu::Device,
-    pub queue: wgpu::Queue,
+    pub graphics_queue: (wgpu::Device, wgpu::Queue),
+    pub compute_queue: (wgpu::Device, wgpu::Queue),
+    pub copy_queue: (wgpu::Device, wgpu::Queue),
     pub window: &'a Window,
 }
 
@@ -29,7 +30,31 @@ impl<'a> WgpuContext<'a> {
         }))
         .unwrap();
 
-        let (device, queue) = pollster::block_on(adapter.request_device(
+        let graphics_queue = pollster::block_on(adapter.request_device(
+            &wgpu::DeviceDescriptor {
+                label: None,
+                required_features: wgpu::Features::empty(),
+                required_limits: wgpu::Limits::default(),
+                memory_hints: Default::default(),
+            },
+            // Some(&std::path::Path::new("trace")), // Trace path
+            None,
+        ))
+        .unwrap();
+
+        let compute_queue = pollster::block_on(adapter.request_device(
+            &wgpu::DeviceDescriptor {
+                label: None,
+                required_features: wgpu::Features::empty(),
+                required_limits: wgpu::Limits::default(),
+                memory_hints: Default::default(),
+            },
+            // Some(&std::path::Path::new("trace")), // Trace path
+            None,
+        ))
+        .unwrap();
+
+        let copy_queue = pollster::block_on(adapter.request_device(
             &wgpu::DeviceDescriptor {
                 label: None,
                 required_features: wgpu::Features::empty(),
@@ -61,9 +86,10 @@ impl<'a> WgpuContext<'a> {
 
         Self {
             surface,
-            device,
-            queue,
             surface_config,
+            graphics_queue,
+            compute_queue,
+            copy_queue,
             window,
         }
     }
