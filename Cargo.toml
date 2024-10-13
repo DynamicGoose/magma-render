@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-magma_ecs = "0.1.0-alpha.5"
+magma_ecs = "0.1.0"
 wgpu = "22.1.0"
 winit = { version = "0.30.5", features = ["rwh_05"] }
 pollster = "0.3.0"

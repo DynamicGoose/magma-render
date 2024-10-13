@@ -1,12 +1,19 @@
-use compute_pass::ComputePass;
-use render_pass::RenderPass;
+use render_node::RenderNode;
 
-pub mod color_attachment;
-pub mod compute_pass;
-pub mod depth_stencil_attachment;
-pub mod render_pass;
+pub mod render_node;
 
-pub struct RenderGraph<'a> {
-    render_passes: Vec<RenderPass<'a>>,
-    compute_passes: Vec<ComputePass>,
+#[derive(Default)]
+pub struct RenderGraph {
+    render_nodes: Vec<Box<dyn RenderNode>>,
+}
+
+impl RenderGraph {
+    pub fn new() -> Self {
+        Self {
+            render_nodes: vec![],
+        }
+    }
+    pub fn add_render_node(&mut self, node: impl RenderNode + 'static) {
+        self.render_nodes.push(Box::new(node));
+    }
 }

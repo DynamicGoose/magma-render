@@ -831,9 +831,9 @@ checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
 name = "magma_ecs"
-version = "0.1.0-alpha.5"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aecedc402474d93424170c5d47c51d5cede847dfd838db2236467ef379a29c09"
+checksum = "131de67e264262c5f675ba3e2f60b62f0e8b92efe490b591b0f737a735a14b1e"
 dependencies = [
  "rayon",
 ]
